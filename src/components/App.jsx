@@ -3,10 +3,14 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
+import Popup from "./Popup";
 
 function App() {
 
   const[Notes,setnotes]=useState([]);
+
+  const[updatebuttonpopup , setupdatebuttonpopup] = useState(false);
+
 
   function addNote(newNote){
     setnotes(prenotes=>{
@@ -21,22 +25,38 @@ function deleteNote(id) {
       });
     });
   }
-function updateNote(id){
-  var updatedtitle = prompt("Title");
-  console.log(updatedtitle);
 
-  Notes.map((note , index)=>{
-    console.log(note.title);
-    if(index === id){
-      console.log("updated");
-      note.title = updatedtitle;
-      setnotes(prenotes=>{
+
+function updateNote(id , title , content){
+  setupdatebuttonpopup(true);
+  var setLocalStorage = localStorage.setItem("selectednoteid", id);
+  var setLocalStorage = localStorage.setItem("selectednotetitle", title);
+  var setLocalStorage = localStorage.setItem("selectednotecontent", content);
+  console.log("before update",localStorage.setItem("selectednoteid", id) , localStorage.setItem("selectednotetitle", title) , localStorage.setItem("selectednotecontent", content))
+}
+
+
+function updatedNote(newupdatedNote){
+  var getLocalStorage = localStorage.getItem("selectednoteid");  
+  console.log("after update",localStorage.getItem("selectednoteid") , localStorage.getItem("selectednotetitle") , localStorage.getItem("selectednotecontent"));
+  Notes.map( (note , index) => {
+    if(index == getLocalStorage){
+      note.title = newupdatedNote.title;
+      note.content = newupdatedNote.content;
+      setnotes(prenotes =>{
         return([...prenotes])
       })
     }
   })
+  setupdatebuttonpopup(false);
 }
-  return (
+
+{
+  var getLocalStoragetitle =  localStorage.getItem("selectednotetitle");
+  var getLocalStoragecontent = localStorage.getItem("selectednotecontent");
+}
+
+return (
     <div>
       <Header />
       <CreateArea onAdd={addNote}/>
@@ -45,6 +65,7 @@ function updateNote(id){
         return(<Note key={index} id={index} title={noteitem.title} content={noteitem.content} onDelete={deleteNote} onUpdate={updateNote}/>)
       })
       }
+      <Popup title={getLocalStoragetitle} content={getLocalStoragecontent} trigger={updatebuttonpopup} settrigger={updatedNote} />
       <Footer />
     </div>
   );

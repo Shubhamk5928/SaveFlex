@@ -42,7 +42,6 @@ function CreateArea(props){
             <Zoom in={isExpanded}>
               <Fab onClick={submitnode}><AddIcon /></Fab>  
             </Zoom>
-            
         </form>
     )
 }
