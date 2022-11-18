@@ -21,14 +21,28 @@ function deleteNote(id) {
       });
     });
   }
+function updateNote(id){
+  var updatedtitle = prompt("Title");
+  console.log(updatedtitle);
 
+  Notes.map((note , index)=>{
+    console.log(note.title);
+    if(index === id){
+      console.log("updated");
+      note.title = updatedtitle;
+      setnotes(prenotes=>{
+        return([...prenotes])
+      })
+    }
+  })
+}
   return (
     <div>
       <Header />
       <CreateArea onAdd={addNote}/>
       { 
       Notes.map((noteitem,index) => {
-        return(<Note key={index} id={index} title={noteitem.title} content={noteitem.content} onDelete={deleteNote}/>)
+        return(<Note key={index} id={index} title={noteitem.title} content={noteitem.content} onDelete={deleteNote} onUpdate={updateNote}/>)
       })
       }
       <Footer />
