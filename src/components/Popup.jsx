@@ -24,11 +24,13 @@ function Popup(props) {
     }
 
   return (props.trigger) ? (<form className="update-note">
+             <div className='update-note-inner'>
              {/* <label>Title</label> */}
              <input  value={note.title} name='title' onChange={handlechange} placeholder='Title'></input>
              {/* <label>content</label> */}
              <textarea  value={note.content} name='content' onChange={handlechange} placeholder='Take a note...' rows={3}></textarea>
              <button onClick={handleupdatedclick} >update</button>
+             </div>
         </form>) : ""
 }
 

@@ -32,7 +32,7 @@ function updateNote(id , title , content){
   var setLocalStorage = localStorage.setItem("selectednoteid", id);
   var setLocalStorage = localStorage.setItem("selectednotetitle", title);
   var setLocalStorage = localStorage.setItem("selectednotecontent", content);
-  console.log("before update",localStorage.setItem("selectednoteid", id) , localStorage.setItem("selectednotetitle", title) , localStorage.setItem("selectednotecontent", content))
+  console.log("before update",localStorage.getItem("selectednoteid") , localStorage.getItem("selectednotetitle") , localStorage.getItem("selectednotecontent"))
 }
 
 
