@@ -28,19 +28,25 @@ function deleteNote(id) {
 
 
 function updateNote(id , title , content){
+  // setnotes(prevnotes => {
+  //   return prevnotes.filter((noteItem, index) => {
+  //     return index == id;
+  //   });
+  // });
   setupdatebuttonpopup(true);
   var setLocalStorage = localStorage.setItem("selectednoteid", id);
   var setLocalStorage = localStorage.setItem("selectednotetitle", title);
   var setLocalStorage = localStorage.setItem("selectednotecontent", content);
+  console.log("before update : ",id , title , content);
   console.log("before update",localStorage.getItem("selectednoteid") , localStorage.getItem("selectednotetitle") , localStorage.getItem("selectednotecontent"))
 }
 
 
 function updatedNote(newupdatedNote){
-  var getLocalStorage = localStorage.getItem("selectednoteid");  
+  var getLocalStorageid = localStorage.getItem("selectednoteid");  
   console.log("after update",localStorage.getItem("selectednoteid") , localStorage.getItem("selectednotetitle") , localStorage.getItem("selectednotecontent"));
   Notes.map( (note , index) => {
-    if(index == getLocalStorage){
+    if(index == getLocalStorageid){
       note.title = newupdatedNote.title;
       note.content = newupdatedNote.content;
       setnotes(prenotes =>{
@@ -65,6 +71,11 @@ return (
         return(<Note key={index} id={index} title={noteitem.title} content={noteitem.content} onDelete={deleteNote} onUpdate={updateNote}/>)
       })
       }
+      {/* { 
+      Notes.map((noteitem,index) => {
+        return(<Popup key={index} id={index} title={noteitem.title} content={noteitem.content} trigger={updatebuttonpopup} settrigger={updatedNote} />)
+      })
+      } */}
       <Popup title={getLocalStoragetitle} content={getLocalStoragecontent} trigger={updatebuttonpopup} settrigger={updatedNote} />
       <Footer />
     </div>
