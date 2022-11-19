@@ -1,8 +1,7 @@
 import React,{useState} from 'react'
 import Zoom from '@mui/material/Zoom';
 
-function Popup(props) {
-
+    function Popup(props) {
     const [note , setNote] = useState({
         title  : props.title,
         content: props.content,
@@ -19,7 +18,7 @@ function Popup(props) {
     }
 
     function handleupdatedclick(event) { 
-        event.preventDefault();  
+        event.preventDefault();
         props.settrigger(note);
     }
 
