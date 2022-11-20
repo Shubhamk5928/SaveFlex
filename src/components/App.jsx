@@ -1,65 +1,90 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 import Popup from "./Popup";
+import db from "../firebase-config";
+import {collection , getDocs , addDoc ,updateDoc,deleteDoc, doc } from "firebase/firestore";
+import { async } from "@firebase/util";
 
 function App() {
 
+
+
   const[Notes,setnotes]=useState([]);
-
+  const userCollectionrefere = collection(db,"admin");
   const[updatebuttonpopup , setupdatebuttonpopup] = useState(false);
+  const[popupboxvalue , setpopupboxvalue] = useState({
+    title:"",
+    content:""
+  })
 
+  useEffect(()=>{
+    const getNotes  = async () =>{
+      const data = await getDocs(userCollectionrefere);
+      console.log("firebase data");
+      setnotes(data.docs.map((doc) => ({...doc.data(),id:doc.id , key:doc.id})));
+      console.log(data);
+    } 
+    getNotes();
+  } ,[])
 
-  function addNote(newNote){
+  const addNote = async (newNote) => {
+    await addDoc(userCollectionrefere , {title : newNote.title , content : newNote.content})
     setnotes(prenotes=>{
-      return([...prenotes , newNote])
+    return([...prenotes , newNote]);
     })
   }
   
-function deleteNote(id) {
+const deleteNote = async (id)=> {
+    const noteDoc = doc(db,"admin",id);
+    await deleteDoc(noteDoc);
+   
     setnotes(prevnotes => {
       return prevnotes.filter((noteItem, index) => {
         return index !== id;
       });
     });
+    window.location.reload();
   }
 
 
-function updateNote(id , title , content){
+const updateNote = (id , title , content) => {
   // setnotes(prevnotes => {
   //   return prevnotes.filter((noteItem, index) => {
   //     return index == id;
   //   });
   // });
+  // console.log("before update popupvalue : ",popupboxvalue.title , popupboxvalue.content);
+  setpopupboxvalue({
+    title : title,
+    content : content
+  })
+  // console.log("after update popupvalue : ",popupboxvalue.title , popupboxvalue.content);
   setupdatebuttonpopup(true);
   var setLocalStorage = localStorage.setItem("selectednoteid", id);
-  var setLocalStorage = localStorage.setItem("selectednotetitle", title);
-  var setLocalStorage = localStorage.setItem("selectednotecontent", content);
   console.log("before update : ",id , title , content);
-  console.log("before update",localStorage.getItem("selectednoteid") , localStorage.getItem("selectednotetitle") , localStorage.getItem("selectednotecontent"))
 }
 
 
-function updatedNote(newupdatedNote){
-  var getLocalStorageid = localStorage.getItem("selectednoteid");  
-  console.log("after update",localStorage.getItem("selectednoteid") , localStorage.getItem("selectednotetitle") , localStorage.getItem("selectednotecontent"));
-  Notes.map( (note , index) => {
-    if(index == getLocalStorageid){
-      note.title = newupdatedNote.title;
-      note.content = newupdatedNote.content;
-      setnotes(prenotes =>{
-        return([...prenotes])
-      })
-    }
-  })
+const updatedNote = async (newupdatedNote) => {
+  var getLocalStorageid = localStorage.getItem("selectednoteid");
+  const noteDoc = doc(db , "admin" , getLocalStorageid);
+  await updateDoc(noteDoc , {title : newupdatedNote.title , content : newupdatedNote.content});
+
+  // console.log("after update inside updated popupboxvalue : ",popupboxvalue.title , popupboxvalue.content);
+  // Notes.map( (note , index) => {
+  //   if(index == getLocalStorageid){
+  //     note.title = newupdatedNote.title;
+  //     note.content = newupdatedNote.content;
+  //     setnotes(prenotes =>{
+  //       return([...prenotes])
+  //     })
+  //   }
+  // })
   setupdatebuttonpopup(false);
-}
-
-{
-  var getLocalStoragetitle =  localStorage.getItem("selectednotetitle");
-  var getLocalStoragecontent = localStorage.getItem("selectednotecontent");
+  window.location.reload();
 }
 
 return (
@@ -67,8 +92,8 @@ return (
       <Header />
       <CreateArea onAdd={addNote}/>
       { 
-      Notes.map((noteitem,index) => {
-        return(<Note key={index} id={index} title={noteitem.title} content={noteitem.content} onDelete={deleteNote} onUpdate={updateNote}/>)
+      Notes.map((noteitem) => {
+        return(<Note id={noteitem.id} key={noteitem.id} title={noteitem.title} content={noteitem.content} onDelete={deleteNote} onUpdate={updateNote}/>)
       })
       }
       {/* { 
@@ -76,7 +101,7 @@ return (
         return(<Popup key={index} id={index} title={noteitem.title} content={noteitem.content} trigger={updatebuttonpopup} settrigger={updatedNote} />)
       })
       } */}
-      <Popup title={getLocalStoragetitle} content={getLocalStoragecontent} trigger={updatebuttonpopup} settrigger={updatedNote} />
+      <Popup titleboxvalue={popupboxvalue.title} contentboxvalue={popupboxvalue.content} trigger={updatebuttonpopup} settrigger={updatedNote} />
       <Footer />
     </div>
   );

@@ -4,10 +4,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 function Note(props){
 
-    function handleclick() {
+    function handleclick(event) {        
         props.onDelete(props.id);
       }
-    function handleupdateclick() {
+
+
+    function handleupdateclick(event) {
+        // event.preventDefault();
         props.onUpdate(props.id , props.title , props.content);
       }
     

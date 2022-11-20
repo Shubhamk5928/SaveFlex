@@ -2,32 +2,37 @@ import React,{useState} from 'react'
 import Zoom from '@mui/material/Zoom';
 
     function Popup(props) {
-    const [note , setNote] = useState({
-        title  : props.title,
-        content: props.content,
+    const [popupnote , setpopupNote] = useState({
+        title  : props.titleboxvalue,
+        content: props.contentboxvalue
     });
-    
+     
+    // setNote({
+    //     title  : props.title,
+    //     content: props.content,
+    // });
+
     function handlechange(event){
         const {name , value} =  event.target;
-        setNote(preNote => {
+        setpopupNote(preNote => {
             return({
                 ...preNote,
                 [name] : value
             })
         })
     }
-
+    
     function handleupdatedclick(event) { 
         event.preventDefault();
-        props.settrigger(note);
+        props.settrigger(popupnote);
     }
 
   return (props.trigger) ? (<form className="update-note">
              <div className='update-note-inner'>
              {/* <label>Title</label> */}
-             <input  value={note.title} name='title' onChange={handlechange} placeholder='Title'></input>
+             <input  value={popupnote.title} name='title' onChange={handlechange} placeholder='Title'></input>
              {/* <label>content</label> */}
-             <textarea  value={note.content} name='content' onChange={handlechange} placeholder='Take a note...' rows={3}></textarea>
+             <textarea  value={popupnote.content} name='content' onChange={handlechange} placeholder='Take a note...' rows={3}></textarea>
              <button onClick={handleupdatedclick} >update</button>
              </div>
         </form>) : ""
